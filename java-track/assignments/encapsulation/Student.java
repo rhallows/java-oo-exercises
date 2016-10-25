@@ -1,14 +1,11 @@
 package encapsulation;
 
-import java.text.DecimalFormat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 public class Student {
 	private String first_name;
 	private String last_name;
+	private String name;
 	private int student_id;
-	private double credits;
+	private int credits;
 	private double gpa;
 
 	
@@ -17,6 +14,7 @@ public class Student {
 		this.first_name = first_name;
 		this.last_name = last_name;
 		this.student_id = student_id;
+		this.name = first_name + " " + last_name;
 	}
 	
 	public String getFirstName()
@@ -31,7 +29,7 @@ public class Student {
 	
 	public String getName()
 	{
-		return (this.first_name + " " + this.last_name);	
+		return this.name;	
 	}
 	
 	public int getStudentID()
@@ -57,7 +55,7 @@ public class Student {
 		}		
 		else if(this.credits >= 30 && this.credits <=59)
 		{
-			status = "Sophmore";
+			status = "Sophomore";
 		}
 		else if(this.credits >= 60 && this.credits <=89)
 		{
@@ -70,7 +68,7 @@ public class Student {
 		return status;
 	}
 	
-	public void submitGrade(double credit, int grade)
+	public void submitGrade(double grade, int credit)
 	{
 		//Gets the quality score for this course
 		//then gets the total quality score 
@@ -82,27 +80,42 @@ public class Student {
 		total_quality_score = total_quality_score + quality_score;
 		
 		this.gpa = total_quality_score/this.credits;
-		DecimalFormat df = new DecimalFormat("#.###");
-		df.format(this.gpa);
+		this.gpa = Math.round(this.gpa *1000d)/ 1000d;
+		
 	}
 	
-	
-	
-	public void testSubmitGrade() {
-		Student s = new Student("D", "S", 1);
-		int credits = 0;
-		double gpatotal = 0;
-		for (int i = 0; i < 100; i++) {
-			int c = (int)(Math.random() * 3 + 1);//1 to 3 credits
-			double g = Math.random() * 4;//0 to 4
-			credits += c;
-			gpatotal += g * c;
-			s.submitGrade(g, c);
-			assertEquals("GPA computed incorrectly", gpatotal / credits, s.getGPA(), 0.01);
-			assertTrue("GPA not rounded", (s.getGPA() + "").length() < 6);
-		}
+	public double computeTuition()
+	{
+		double semisters = this.credits/15;
+		double remainderHours = this.credits%15;
+		
+		
+		//double tuition = 20000;
+		double tuition = (semisters * 20000) + (remainderHours * 1333.33);
+		
+		return  tuition;
 	}
+	
+		
+	public Student createLegacy(Student studentOne, Student studentTwo)
+	{
+		Student legacy = new Student(first_name, last_name, student_id);
+		legacy.first_name = studentOne.getName();
+		legacy.last_name = studentTwo.getName();
+		legacy.student_id = studentOne.student_id + studentTwo.student_id;
+		legacy.gpa = (studentOne.gpa + studentTwo.gpa) / 2;
+		legacy.credits = Math.max(studentOne.credits, studentTwo.credits);
+		
+		return legacy;
+	}
+	
+	public String toString()
+	{
+		return this.first_name + " " + this.last_name + " " + this.student_id;
+	}
+	
 	
 }
+
 
 
